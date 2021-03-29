@@ -24,27 +24,6 @@ class Species(models.Model):
     def __str__(self):
         return self.common_name
 
-# class Time(models.Model):
-#     MONTH_CHOICES=[
-#         (1,"January"),
-#         (2,"February"),
-#         (3,"March"),
-#         (4,"April"),
-#         (5,"May"),
-#         (6,"June"),
-#         (7,"July"),
-#         (8,"August"),
-#         (9,"September"),
-#         (10,"October"),
-#         (11,"November"),
-#         (12,"December"),
-#     ]
-
-#     time_period=models.IntegerField(choices=MONTH_CHOICES)
-
-#     def __str__(self):
-#         return self.get_time_period_display()
-
 class Refined_Sighting(models.Model):
     MONTH_CHOICES=[
         (1,"January"),
