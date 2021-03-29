@@ -2,6 +2,9 @@ from django.db import models
 
 # Create your models here.
 
+class user(models.Model):
+    id = models.AutoField(primary_key=True)
+
 
 class Location(models.Model):
     x_coordinate_start=models.DecimalField(max_digits=9, decimal_places=6)
@@ -75,7 +78,8 @@ class Refined_Sighting(models.Model):
         return "{} AT {} IN {}".format(self.Species, self.Location, self.get_time_period_display())
 
 
-
-
-
-
+class Raw_sightings(models.Model):
+    id = models.AutoField(primary_key=True)
+    userId = models.ForeignKey(user,on_delete=models.SET_NULL)
+    count = models.PositiveIntegerField(default=0)
+    species = models.ManytoManyField(Species)
