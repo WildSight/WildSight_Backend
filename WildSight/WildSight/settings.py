@@ -40,13 +40,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'wildSightApp',
+<<<<<<< HEAD
+=======
+    'knox',
+>>>>>>> 85ea64dea4a5f501b6e9a28e64829d0786c0b1e4
     'corsheaders',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
 }
 
 MIDDLEWARE = [
@@ -58,7 +63,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+<<<<<<< HEAD
+=======
+    'django.middleware.common.CommonMiddleware',
+>>>>>>> 85ea64dea4a5f501b6e9a28e64829d0786c0b1e4
 ]
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000/'
+)
 
 ROOT_URLCONF = 'WildSight.urls'
 
