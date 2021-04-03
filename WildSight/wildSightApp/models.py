@@ -53,17 +53,17 @@ class Refined_Sighting(models.Model):
         return "{} AT {} IN {}".format(self.Species, self.Location, self.get_time_period_display())
 
 
-# class Raw_Sighting(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     #userId = models.ForeignKey(User,on_delete=models.SET_NULL)
-#     count = models.PositiveIntegerField(default=0)
-#     #species = models.ManytoManyField(Species)
-#     date = models.DateTimeField()
-#     #image = models.ImageField(max_length=256)
-#     location_longitude = models.DecimalField(max_digits=9, decimal_places=6)
-#     location_latitude = models.DecimalField(max_digits=9, decimal_places=6)
+class Raw_Sighting(models.Model):
+    id = models.AutoField(primary_key=True)
+    userId = models.ForeignKey(User,on_delete=models.CASCADE)
+    count = models.PositiveIntegerField(default=0)
+    species = models.ForeignKey(Species,on_delete=models.CASCADE)
+    date_time = models.DateTimeField()
+    #image = models.ImageField(max_length=256)
+    location_longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    location_latitude = models.DecimalField(max_digits=9, decimal_places=6)
 
-
+ 
 #INBUILT USER MODEL USED
 #Fields:
 #id

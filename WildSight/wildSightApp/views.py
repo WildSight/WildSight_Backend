@@ -1,9 +1,11 @@
 from django.shortcuts import render
-from .models import Species, Refined_Sighting, Location
-from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer
+from .models import Species, Refined_Sighting, Location, Raw_Sighting
+from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from knox.models import AuthToken
+from rest_framework.views import APIView
+from rest_framework.parsers import JSONParse
 
 # Create your views here.
 
@@ -34,7 +36,12 @@ class Refined_Sightings_Locations_list(generics.RetrieveUpdateDestroyAPIView):
         return Refined_Sighting.objects.filter(Location=self.kwargs['pk'])
     serializer_class=Refined_Sighting_Serializer
 
+class Raw_Sighting_Input(generics.ListCreateAPIView):
+    serializer_class = Raw_Sighting_Serializer
 
+    queryset = Raw_Sighting.objects.all()
+    
+   
 
 #Register API
 

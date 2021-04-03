@@ -1,5 +1,5 @@
 from rest_framework import serializers,generics
-from .models import Species, Refined_Sighting, Location #,Raw_Sighting
+from .models import Species, Refined_Sighting, Location ,Raw_Sighting
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -63,16 +63,7 @@ class Refined_Sighting_Serializer(serializers.ModelSerializer):
         )
         model=Refined_Sighting
 
-# class Raw_Sighting_Serializer(serializers.ModelSerializer):
-#     class Meta:
-#         fields=(
-#             'id',
-#             'userId',
-#             'count',
-#             'species',
-#             'date',
-#             'location_longitude',
-#             'location_latitude',
-#             'image',
-#         )
-#         model=Raw_Sighting
+class Raw_Sighting_Serializer(serializers.ModelSerializer):
+    class Meta:
+        fields='__all__'
+        model=Raw_Sighting

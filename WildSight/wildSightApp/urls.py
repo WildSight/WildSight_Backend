@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views
-from .views import RegisterAPI, LoginAPI, UserAPI
+from .views import RegisterAPI, LoginAPI, UserAPI, Raw_Sighting_Input
 from knox import views as knox_views
 
 urlpatterns=[
@@ -9,6 +9,7 @@ urlpatterns=[
     path('Species/<int:pk>', views.Species_element.as_view()),
     path('Refined_Sightings/Species/<int:pk>', views.Refined_Sightings_Species_list.as_view()),
     path('Refined_Sightings/Location/<int:pk>', views.Refined_Sightings_Locations_list.as_view()),
+    path('Raw_Sighting', Raw_Sighting_Input.as_view()),
     path('Locations/', views.Locations_list.as_view()),
     path('auth', include('knox.urls')),
     path('auth/register', RegisterAPI.as_view()),
