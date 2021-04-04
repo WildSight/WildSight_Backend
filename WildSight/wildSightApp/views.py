@@ -5,7 +5,8 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from knox.models import AuthToken
 from rest_framework.views import APIView
-from rest_framework.parsers import JSONParse
+from django.contrib.auth.models import User
+
 
 # Create your views here.
 
@@ -36,10 +37,27 @@ class Refined_Sightings_Locations_list(generics.RetrieveUpdateDestroyAPIView):
         return Refined_Sighting.objects.filter(Location=self.kwargs['pk'])
     serializer_class=Refined_Sighting_Serializer
 
-class Raw_Sighting_Input(generics.ListCreateAPIView):
-    serializer_class = Raw_Sighting_Serializer
+class Raw_Sighting_Input(generics.CreateAPIView):
+    
+    def get_serializer(self, *args, **kwargs):
+        # leave this intact
+        serializer_class = self.get_serializer_class()
+        kwargs["context"] = self.get_serializer_context()
 
+        """
+        Intercept the request and see if it needs tweaking
+        """
+        
+        # Copy and manipulate the request
+        draft_request_data = self.request.data.copy()
+        draft_request_data["userId"] = User.objects.get(username=draft_request_data["userId"]).pk
+        draft_request_data["species"] = Species.objects.get(common_name = draft_request_data["species"]).id
+        kwargs["data"] = draft_request_data
+        return serializer_class(*args, **kwargs)
+
+    serializer_class = Raw_Sighting_Serializer
     queryset = Raw_Sighting.objects.all()
+        
     
    
 

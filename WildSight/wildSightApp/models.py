@@ -23,6 +23,7 @@ class Species(models.Model):
     def __str__(self):
         return self.common_name
 
+
 class Refined_Sighting(models.Model):
     MONTH_CHOICES=[
         (1,"January"),
