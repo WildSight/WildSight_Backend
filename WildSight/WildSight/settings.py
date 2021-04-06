@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'wildSightApp',
     'knox',
     'corsheaders',
+    'django_filters',
 ]
 
 REST_FRAMEWORK = {
