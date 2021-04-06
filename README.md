@@ -4,6 +4,8 @@
 <ol>
 <li> django-cors-headers </li>
 <li> django-rest-knox </li>
+<li> pillow </li>
+<li> django-filter </li>
 </ol>
 
 ## Steps to run backend
