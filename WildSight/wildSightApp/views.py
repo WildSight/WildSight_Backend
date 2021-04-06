@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from .models import Species, Refined_Sighting, Location, Raw_Sighting
 from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
 from knox.models import AuthToken
 from rest_framework.views import APIView
 from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth.models import User
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
@@ -15,6 +16,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 class Species_list(generics.ListAPIView):
     queryset=Species.objects.all()
     serializer_class=SpeciesSerializer
+    filter_backends=[filters.SearchFilter]
+    search_fields=['common_name']
 
 class Locations_list(generics.ListAPIView):
     queryset=Location.objects.all()
