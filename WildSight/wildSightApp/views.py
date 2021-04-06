@@ -5,8 +5,10 @@ from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
 from knox.models import AuthToken
 from rest_framework.views import APIView
+from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 # Create your views here.
@@ -41,6 +43,10 @@ class Refined_Sightings_Locations_list(generics.RetrieveUpdateDestroyAPIView):
     serializer_class=Refined_Sighting_Serializer
 
 class Raw_Sighting_Input(generics.CreateAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    parser_classes = [MultiPartParser, FormParser]
     
     def get_serializer(self, *args, **kwargs):
         # leave this intact
@@ -81,6 +87,7 @@ class RegisterAPI(generics.GenericAPIView):
 # Login API
 class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    authentication_classes = [BasicAuthentication]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
