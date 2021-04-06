@@ -26,8 +26,6 @@ SECRET_KEY = 'h8b-k984lh#euql4u^9i+buohn*if+5she&fa%=x*xtis*t6u+'
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','192.168.43.185','192.168.1.1']
-#'127.0.0.1'
-#'192.168.43.185'
 
 # Application definition
 
@@ -40,10 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'wildSightApp',
-<<<<<<< HEAD
-=======
     'knox',
->>>>>>> 85ea64dea4a5f501b6e9a28e64829d0786c0b1e4
     'corsheaders',
 ]
 
@@ -63,10 +58,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-<<<<<<< HEAD
-=======
-    'django.middleware.common.CommonMiddleware',
->>>>>>> 85ea64dea4a5f501b6e9a28e64829d0786c0b1e4
 ]
 
 CORS_ORIGIN_WHITELIST = (

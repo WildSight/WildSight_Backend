@@ -9,7 +9,7 @@ from knox.models import AuthToken
 
 class Species_list(generics.ListAPIView):
     queryset=Species.objects.all()
-    serializer_class=SpeciesSerializer
+    serializer_class=SpeciesSerializer    
 
 class Locations_list(generics.ListAPIView):
     queryset=Location.objects.all()
