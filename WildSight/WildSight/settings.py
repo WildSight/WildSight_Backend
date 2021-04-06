@@ -25,7 +25,13 @@ SECRET_KEY = 'h8b-k984lh#euql4u^9i+buohn*if+5she&fa%=x*xtis*t6u+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','192.168.43.185','192.168.1.1']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    '192.168.43.185',
+    '192.168.1.1'
+    ]
+
 
 # Application definition
 
@@ -60,9 +66,11 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000/'
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000',
+#     'http://localhost:8000',
+#     'http://localhost:8080'
+# )
 
 ROOT_URLCONF = 'WildSight.urls'
 
