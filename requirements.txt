@@ -11,6 +11,7 @@ distlib==0.3.0
 distro==1.4.0
 Django==3.1.7
 django-cors-headers==3.7.0
+django-filter==2.4.0
 django-rest-knox==4.1.0
 djangorestframework==3.12.2
 html5lib==1.0.1
@@ -20,6 +21,7 @@ lockfile==0.12.2
 msgpack==0.6.2
 packaging==20.3
 pep517==0.8.2
+Pillow==8.2.0
 progress==1.5
 pycparser==2.20
 pyparsing==2.4.6

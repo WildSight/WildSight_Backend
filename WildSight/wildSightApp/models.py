@@ -60,9 +60,12 @@ class Raw_Sighting(models.Model):
     count = models.PositiveIntegerField(default=0)
     species = models.ForeignKey(Species,on_delete=models.CASCADE)
     date_time = models.DateTimeField()
-    #image = models.ImageField(max_length=256)
+    #image = models.ImageField(max_length=256, blank = True, upload_to='uploads/')
     location_longitude = models.DecimalField(max_digits=9, decimal_places=6)
     location_latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    upvotes = models.PositiveIntegerField()
+    downvotes = models.PositiveIntegerField()
+    credible = models.BooleanField()
 
  
 #INBUILT USER MODEL USED
@@ -71,4 +74,7 @@ class Raw_Sighting(models.Model):
 #username
 #email
 #password
+
+#Temp Token table
 #token
+#userid

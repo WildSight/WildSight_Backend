@@ -6,16 +6,16 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ('id', 'username','first_name','last_name','email')
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username','email','password')
+        fields = ('id', 'username','first_name','last_name','email','password')
         extra_kwargs = {'password':{'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
+        user = User.objects.create_user(validated_data['username'],validated_data['first_name'],validated_data['last_name'], validated_data['email'], validated_data['password'])
         return user
 
 #Login Serializer
@@ -65,5 +65,13 @@ class Refined_Sighting_Serializer(serializers.ModelSerializer):
 
 class Raw_Sighting_Serializer(serializers.ModelSerializer):
     class Meta:
-        fields='__all__'
+        fields=(
+            'userId',
+            'count',
+            'species',
+            'date_time',
+            'location_longitude',
+            'location_latitude',
+            #'image'
+        )
         model=Raw_Sighting
