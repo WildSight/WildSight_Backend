@@ -63,9 +63,9 @@ class Raw_Sighting(models.Model):
     #image = models.ImageField(max_length=256, blank = True, upload_to='uploads/')
     location_longitude = models.DecimalField(max_digits=9, decimal_places=6)
     location_latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    upvotes = models.PositiveIntegerField()
-    downvotes = models.PositiveIntegerField()
-    credible = models.BooleanField()
+    upvotes = models.PositiveIntegerField(default=0)
+    downvotes = models.PositiveIntegerField(default=0)
+    credible = models.BooleanField(default=False, blank=True)
 
  
 #INBUILT USER MODEL USED
