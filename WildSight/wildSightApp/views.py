@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Species, Refined_Sighting, Location, Raw_Sighting
 from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer
-from rest_framework import generics, permissions, filters
+from rest_framework import generics, permissions, filters, status
 from rest_framework.response import Response
 from knox.models import AuthToken
 from rest_framework.views import APIView
@@ -20,8 +20,17 @@ class Species_list(generics.ListAPIView):
     search_fields=['common_name']
 
 class Locations_list(generics.ListAPIView):
-    queryset=Location.objects.all()
+    #queryset=Location.objects.all()
     serializer_class=LocationSerializer
+
+    def get_queryset(self):
+        queryset=Location.objects.all()
+        latitude=(self.request.query_params.get('lat'))
+        longitude=(self.request.query_params.get('long'))
+        if latitude is None and longitude is None:
+            return queryset
+        queryset=Location.objects.filter(y_coordinate_start__lt=latitude, y_coordinate_end__gte = latitude, x_coordinate_start__lt=longitude, x_coordinate_end__gte=longitude)
+        return queryset
 
 class Refined_Sightings_list(generics.ListCreateAPIView):
     queryset=Refined_Sighting.objects.all()

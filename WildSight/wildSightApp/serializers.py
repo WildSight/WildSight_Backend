@@ -72,6 +72,6 @@ class Raw_Sighting_Serializer(serializers.ModelSerializer):
             'date_time',
             'location_longitude',
             'location_latitude',
-            'image'
+            #'image'
         )
         model=Raw_Sighting
