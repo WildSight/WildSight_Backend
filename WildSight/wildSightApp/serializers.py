@@ -11,11 +11,11 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username','first_name','last_name','email','password')
+        fields = ('id', 'username','email','password')
         extra_kwargs = {'password':{'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'],validated_data['first_name'],validated_data['last_name'], validated_data['email'], validated_data['password'])
+        user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
         return user
 
 #Login Serializer
@@ -72,6 +72,6 @@ class Raw_Sighting_Serializer(serializers.ModelSerializer):
             'date_time',
             'location_longitude',
             'location_latitude',
-            #'image'
+            'image'
         )
         model=Raw_Sighting
