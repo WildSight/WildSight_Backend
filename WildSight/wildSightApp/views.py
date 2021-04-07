@@ -46,7 +46,10 @@ class Refined_Sightings_Species_list(generics.ListAPIView):
     def get_queryset(self):
         queryset=Refined_Sighting.objects.all()
         sp=self.request.query_params.get('sp')
-        return queryset.filter(Species=sp)
+        time=self.request.query_params.get('time')
+        if time is None:
+            return queryset.filter(Species=sp)
+        return queryset.filter(Species=sp, time_period=time)
     
 
 class Refined_Sightings_Locations_list(generics.ListAPIView):
@@ -55,7 +58,10 @@ class Refined_Sightings_Locations_list(generics.ListAPIView):
     def get_queryset(self):
         queryset=Refined_Sighting.objects.all()
         loc=self.request.query_params.get('loc')
-        return queryset.filter(Location=loc)
+        time=self.request.query_params.get('time')
+        if time is None:
+            return queryset.filter(Location=loc)
+        return queryset.filter(Location=loc, time_period=time)
 
 class Raw_Sighting_Input(generics.CreateAPIView):
     permission_classes = [
