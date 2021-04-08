@@ -19,4 +19,5 @@ urlpatterns=[
     path('auth/logoutall', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
     path('auth/user', UserAPI.as_view()),
     path('Ratification_List/', views.Ratification_List.as_view()),
+    path('Raw_Sighting/Output/', views.Raw_Sighting_Output.as_view()),
 ]

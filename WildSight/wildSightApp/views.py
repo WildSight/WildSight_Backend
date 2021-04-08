@@ -67,7 +67,7 @@ class Location_element(generics.RetrieveAPIView):
     queryset=Location.objects.all()
     serializer_class=LocationSerializer
 
-class Raw_Sighting_Input(generics.ListCreateAPIView):
+class Raw_Sighting_Input(generics.CreateAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
@@ -88,11 +88,13 @@ class Raw_Sighting_Input(generics.ListCreateAPIView):
         draft_request_data["species"] = Species.objects.get(common_name = draft_request_data["species"]).id
         kwargs["data"] = draft_request_data
         return serializer_class(*args, **kwargs)
-
+    
     serializer_class = Raw_Sighting_Serializer
     queryset = Raw_Sighting.objects.all()
         
-    
+class Raw_Sighting_Output(generics.ListAPIView):
+    serializer_class = Raw_Sighting_Serializer
+    queryset = Raw_Sighting.objects.all()
    
 
 #Register API
@@ -165,21 +167,24 @@ class Ratification_List(generics.ListAPIView):
         queryset=queryset.exclude(user=user)
         num=self.request.query_params.get('num')
         if num is not None:
-            return queryset.order_by(date_time)[0:num]
+            return queryset.order_by('date_time').reverse()[0:int(num)]
         return queryset
 
-class vote(generics.UpdateAPIView):
-    permission_classes = [
-        permissions.IsAuthenticated,
-    ]
-    serializer_class=Raw_Sighting_Serializer
-
-    def patch(self):
-        votestr=self.request.query_params.get('vote')
-        queryset=Raw_Sighting.objects.all()
-        if votestr=='up':
-            queryset.upvotes+=1
-        elif votestr=='down':
-            queryset.downvotes+=1
-        if queryset.upvotes+queryset.downvotes>=10:
-            if queryset.upvotes/queryset.downvotes >= 0.7:
+# class vote(generics.UpdateAPIView):
+#     permission_classes = [
+#         permissions.IsAuthenticated,
+#     ]
+#     serializer_class=Raw_Sighting_Serializer
+#     ###  
+#     def patch(self):
+#         #####add this user vote to many to one relationship
+#         votestr=self.request.query_params.get('vote')
+#         queryset=Raw_Sighting.objects.all()
+#         if votestr=='up':
+#             queryset.upvotes+=1
+#         elif votestr=='down':
+#             queryset.downvotes+=1
+#         if queryset.upvotes+queryset.downvotes>=10:
+#             if queryset.upvotes/queryset.downvotes >= 0.7:
+#                   #####add this to refined sighting ,, make credibility=true  
+#                   
