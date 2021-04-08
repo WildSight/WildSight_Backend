@@ -63,7 +63,7 @@ class Refined_Sightings_Locations_list(generics.ListAPIView):
             return queryset.filter(Location=loc)
         return queryset.filter(Location=loc, time_period=time)
 
-class Raw_Sighting_Input(generics.CreateAPIView):
+class Raw_Sighting_Input(generics.ListCreateAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
@@ -128,3 +128,37 @@ class UserAPI(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+
+
+# class Ratification_List(generics.ListAPIView):
+#     permission_classes = [
+#         permissions.IsAuthenticated,
+#     ]
+#     serializer_class=Raw_Sighting_Serializer
+
+#     def get_queryset(self):
+#         queryset=Raw_Sighting.objects.filter(credible=False)
+#         user=self.request.user
+#         queryset=queryset.exclude(user=user)
+#         num=self.request.query_params.get('num')
+#         if num is not Null:
+#             return queryset[0:num]
+#         return queryset
+
+# class vote(generics.UpdateAPIView):
+#     permission_classes = [
+#         permissions.IsAuthenticated,
+#     ]
+#     serializer_class=Raw_Sighting_Serializer
+
+#     def patch(self):
+#         votestr=self.request.query_params.get('vote')
+#         queryset=Raw_Sighting.objects.all()
+#         if votestr=='up':
+#             queryset.upvotes+=1
+#         elif votestr=='down':
+#             queryset.downvotes+=1
+#         if queryset.upvotes+queryset.downvotes>=10:
+#             if queryset.upvotes/queryset.downvotes >= 0.7:

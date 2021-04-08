@@ -56,7 +56,7 @@ class Refined_Sighting(models.Model):
 
 class Raw_Sighting(models.Model):
     id = models.AutoField(primary_key=True)
-    userId = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)
     species = models.ForeignKey(Species,on_delete=models.CASCADE)
     date_time = models.DateTimeField()
@@ -66,6 +66,8 @@ class Raw_Sighting(models.Model):
     upvotes = models.PositiveIntegerField(default=0)
     downvotes = models.PositiveIntegerField(default=0)
     credible = models.BooleanField(default=False, blank=True)
+
+    voted_by=models.ManyToManyField(User, blank=True, null=True, related_name="Voter")
 
  
 #INBUILT USER MODEL USED
