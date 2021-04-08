@@ -9,6 +9,7 @@ urlpatterns=[
     path('Species/<int:pk>', views.Species_element.as_view()),
     path('Refined_Sightings/Species/', views.Refined_Sightings_Species_list.as_view()),
     path('Refined_Sightings/Location/', views.Refined_Sightings_Locations_list.as_view()),
+    path('Locations/<int:pk>', views.Location_element.as_view()),
     path('Raw_Sighting/', views.Raw_Sighting_Input.as_view()),
     path('Locations/', views.Locations_list.as_view()),
     path('auth', include('knox.urls')),

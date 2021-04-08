@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+# class UserProfile(models.Model):
+#     user   = models.OneToOneField(User)
+#     avatar = models.ImageField(upload_to = 'avatars/')
 
 class Location(models.Model):
     x_coordinate_start=models.DecimalField(max_digits=9, decimal_places=6)
@@ -66,7 +69,6 @@ class Raw_Sighting(models.Model):
     upvotes = models.PositiveIntegerField(default=0)
     downvotes = models.PositiveIntegerField(default=0)
     credible = models.BooleanField(default=False, blank=True)
-
     voted_by=models.ManyToManyField(User, blank=True, null=True, related_name="Voter")
 
  

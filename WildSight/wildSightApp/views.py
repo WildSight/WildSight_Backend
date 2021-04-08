@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Species, Refined_Sighting, Location, Raw_Sighting
-from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer
+from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer #, UserProfileSerializer
 from rest_framework import generics, permissions, filters, status
 from rest_framework.response import Response
 from knox.models import AuthToken
@@ -62,6 +62,10 @@ class Refined_Sightings_Locations_list(generics.ListAPIView):
         if time is None:
             return queryset.filter(Location=loc)
         return queryset.filter(Location=loc, time_period=time)
+
+class Location_element(generics.RetrieveAPIView):
+    queryset=Location.objects.all()
+    serializer_class=LocationSerializer
 
 class Raw_Sighting_Input(generics.ListCreateAPIView):
     permission_classes = [
@@ -129,6 +133,25 @@ class UserAPI(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+# class UserProfileAPI(APIView):
+#     serializer_class = UserProfileSerializer
+#     queryset = Raw_Sighting.objects.all()
+#     permission_classes = [
+#         permissions.IsAuthenticated,
+#     ]
+#     parser_classes = [MultiPartParser, FormParser]
+
+#     def get_object(self, pk):
+#         return UserProfile.objects.get(pk=pk)
+
+#     def patch(self, request, pk):
+#         profile_object = self.get_object(pk)
+#         serializer = UserProfileSerializer(profile_object, data=request.data, partial=True) # set partial=True to update a data partially
+#         if serializer.is_valid():
+#             serializer.save()
+#             return queryset(code=201, data=serializer.data)
+#         return queryset(code=400, data="wrong parameters")
+
 
 class Ratification_List(generics.ListAPIView):
     permission_classes = [
@@ -142,21 +165,21 @@ class Ratification_List(generics.ListAPIView):
         queryset=queryset.exclude(user=user)
         num=self.request.query_params.get('num')
         if num is not None:
-            return queryset[0:num]
+            return queryset.order_by(date_time)[0:num]
         return queryset
 
-# class vote(generics.UpdateAPIView):
-#     permission_classes = [
-#         permissions.IsAuthenticated,
-#     ]
-#     serializer_class=Raw_Sighting_Serializer
+class vote(generics.UpdateAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class=Raw_Sighting_Serializer
 
-#     def patch(self):
-#         votestr=self.request.query_params.get('vote')
-#         queryset=Raw_Sighting.objects.all()
-#         if votestr=='up':
-#             queryset.upvotes+=1
-#         elif votestr=='down':
-#             queryset.downvotes+=1
-#         if queryset.upvotes+queryset.downvotes>=10:
-#             if queryset.upvotes/queryset.downvotes >= 0.7:
+    def patch(self):
+        votestr=self.request.query_params.get('vote')
+        queryset=Raw_Sighting.objects.all()
+        if votestr=='up':
+            queryset.upvotes+=1
+        elif votestr=='down':
+            queryset.downvotes+=1
+        if queryset.upvotes+queryset.downvotes>=10:
+            if queryset.upvotes/queryset.downvotes >= 0.7:
