@@ -80,7 +80,7 @@ class Raw_Sighting_Input(generics.ListCreateAPIView):
         
         # Copy and manipulate the request
         draft_request_data = self.request.data.copy()
-        draft_request_data["userId"] = User.objects.get(username=draft_request_data["userId"]).pk
+        draft_request_data["user"] = User.objects.get(username=draft_request_data["user"]).pk
         draft_request_data["species"] = Species.objects.get(common_name = draft_request_data["species"]).id
         kwargs["data"] = draft_request_data
         return serializer_class(*args, **kwargs)
@@ -130,22 +130,20 @@ class UserAPI(generics.RetrieveAPIView):
         return self.request.user
 
 
+class Ratification_List(generics.ListAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class=Raw_Sighting_Serializer
 
-
-# class Ratification_List(generics.ListAPIView):
-#     permission_classes = [
-#         permissions.IsAuthenticated,
-#     ]
-#     serializer_class=Raw_Sighting_Serializer
-
-#     def get_queryset(self):
-#         queryset=Raw_Sighting.objects.filter(credible=False)
-#         user=self.request.user
-#         queryset=queryset.exclude(user=user)
-#         num=self.request.query_params.get('num')
-#         if num is not Null:
-#             return queryset[0:num]
-#         return queryset
+    def get_queryset(self):
+        queryset=Raw_Sighting.objects.filter(credible=False)
+        user=self.request.user
+        queryset=queryset.exclude(user=user)
+        num=self.request.query_params.get('num')
+        if num is not None:
+            return queryset[0:num]
+        return queryset
 
 # class vote(generics.UpdateAPIView):
 #     permission_classes = [

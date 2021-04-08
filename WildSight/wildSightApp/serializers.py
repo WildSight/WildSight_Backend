@@ -66,7 +66,7 @@ class Refined_Sighting_Serializer(serializers.ModelSerializer):
 class Raw_Sighting_Serializer(serializers.ModelSerializer):
     class Meta:
         fields=(
-            'userId',
+            'user',
             'count',
             'species',
             'date_time',
