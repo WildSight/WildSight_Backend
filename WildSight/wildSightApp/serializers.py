@@ -1,5 +1,5 @@
 from rest_framework import serializers,generics
-from .models import Species, Refined_Sighting, Location ,Raw_Sighting , UserProfile
+from .models import Species, Refined_Sighting, Location ,Raw_Sighting #, UserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -8,11 +8,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username','first_name','last_name','email')
 
-class UserProfileSerializer(serializers.ModelSerializer):
+# class UserProfileSerializer(serializers.ModelSerializer):
 
-    class Meta(UserSerializer.Meta):
-        model = UserProfile
-        fields = UserSerializer.Meta.fields + ('avatar',)
+#     class Meta(UserSerializer.Meta):
+#         model = UserProfile
+#         fields = UserSerializer.Meta.fields + ('avatar',)
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,5 +78,23 @@ class Raw_Sighting_Serializer(serializers.ModelSerializer):
             'location_longitude',
             'location_latitude',
             'image',
+        )
+        model=Raw_Sighting
+
+class Raw_Sighting_Serializer_Output(serializers.ModelSerializer):
+    class Meta:
+        fields=(
+            'id',
+            'user',
+            'count',
+            'species',
+            'date_time',
+            'location_longitude',
+            'location_latitude',
+            'image',
+            'voted_by',
+            'credible',
+            'upvotes',
+            'downvotes'
         )
         model=Raw_Sighting
