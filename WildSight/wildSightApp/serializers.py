@@ -1,5 +1,5 @@
 from rest_framework import serializers,generics
-from .models import Species, Refined_Sighting, Location ,Raw_Sighting
+from .models import Species, Refined_Sighting, Location ,Raw_Sighting #, UserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -7,6 +7,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username','first_name','last_name','email')
+
+# class UserProfileSerializer(serializers.ModelSerializer):
+
+#     class Meta(UserSerializer.Meta):
+#         model = UserProfile
+#         fields = UserAccountSerializer.Meta.fields + ('avatar',)
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,7 +34,6 @@ class LoginSerializer(serializers.Serializer):
         if user and  user.is_active:
             return user
         raise serializers.ValidationError("Incorrect Credentials")
-
 
 
 class SpeciesSerializer(serializers.ModelSerializer):
@@ -66,12 +71,12 @@ class Refined_Sighting_Serializer(serializers.ModelSerializer):
 class Raw_Sighting_Serializer(serializers.ModelSerializer):
     class Meta:
         fields=(
-            'userId',
+            'user',
             'count',
             'species',
             'date_time',
             'location_longitude',
             'location_latitude',
-            'image'
+            'image',
         )
         model=Raw_Sighting
