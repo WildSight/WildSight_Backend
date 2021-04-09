@@ -1,6 +1,6 @@
 from django.urls import path, include
 from . import views
-from .views import RegisterAPI, LoginAPI, UserAPI, Raw_Sighting_Input, UserProfileAPI
+from .views import RegisterAPI, LoginAPI,  Raw_Sighting_Input, UserProfileAPI, GetUserSightings
 from knox import views as knox_views
 
 urlpatterns=[
@@ -17,8 +17,9 @@ urlpatterns=[
     path('auth/login', LoginAPI.as_view()),
     path('auth/logout', knox_views.LogoutView.as_view(), name='knox_logout'),
     path('auth/logoutall', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
-    path('auth/user', UserAPI.as_view()),
+    #path('auth/user', UserAPI.as_view()),
     path('auth/userProfile', UserProfileAPI.as_view()),
+    path('auth/GetOwnSightings', GetUserSightings.as_view()),
     path('Ratification_List/', views.Ratification_List.as_view()),
     path('Raw_Sighting/Output/', views.Raw_Sighting_Output.as_view()),
     path('Raw_Sighting/vote/', views.vote.as_view()),

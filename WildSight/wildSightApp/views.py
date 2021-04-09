@@ -126,14 +126,19 @@ class LoginAPI(generics.GenericAPIView):
         })
 
 #Get user API
-class UserAPI(generics.RetrieveAPIView):
+class GetUserSightings(generics.ListAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
-    serializer_class = UserSerializer
+    serializer_class=Raw_Sighting_Serializer
 
-    def get_object(self):
-        return self.request.user
+    def get_queryset(self):
+        user=self.request.user
+        queryset=Raw_Sighting.objects.filter(user = user)
+        num=self.request.query_params.get('num')
+        if num is not None:
+            return queryset.order_by('date_time').reverse()[0:int(num)]
+        return queryset
 
 class UserProfileAPI(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
