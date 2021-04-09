@@ -69,7 +69,7 @@ class Raw_Sighting(models.Model):
     upvotes = models.PositiveIntegerField(default=0)
     downvotes = models.PositiveIntegerField(default=0)
     credible = models.BooleanField(default=False, blank=True)
-    voted_by=models.ManyToManyField(User, blank=True, null=True, related_name="Voter")
+    voted_by=models.ManyToManyField(User, related_name="Voter")
 
  
 #INBUILT USER MODEL USED

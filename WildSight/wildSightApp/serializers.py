@@ -80,3 +80,21 @@ class Raw_Sighting_Serializer(serializers.ModelSerializer):
             'image',
         )
         model=Raw_Sighting
+
+class Raw_Sighting_Serializer_Output(serializers.ModelSerializer):
+    class Meta:
+        fields=(
+            'id',
+            'user',
+            'count',
+            'species',
+            'date_time',
+            'location_longitude',
+            'location_latitude',
+            'image',
+            'voted_by',
+            'credible',
+            'upvotes',
+            'downvotes'
+        )
+        model=Raw_Sighting
