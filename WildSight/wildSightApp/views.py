@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Species, Refined_Sighting, Location, Raw_Sighting
-from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer #, UserProfileSerializer
+from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer , UserProfileSerializer
 from rest_framework import generics, permissions, filters, status
 from rest_framework.response import Response
 from knox.models import AuthToken
@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 
 # Create your views here.
@@ -135,18 +135,18 @@ class UserAPI(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
-# class UserProfileAPI(APIView):
+# class UserProfileAPI(generics.UpdateAPIView):
 #     serializer_class = UserProfileSerializer
-#     queryset = Raw_Sighting.objects.all()
+#     queryset = User.objects.get()
 #     permission_classes = [
 #         permissions.IsAuthenticated,
 #     ]
 #     parser_classes = [MultiPartParser, FormParser]
 
-#     def get_object(self, pk):
-#         return UserProfile.objects.get(pk=pk)
+#     def get_object(self):
+#         return UserProfile.objects.get()
 
-#     def patch(self, request, pk):
+#     def patch(self, request):
 #         profile_object = self.get_object(pk)
 #         serializer = UserProfileSerializer(profile_object, data=request.data, partial=True) # set partial=True to update a data partially
 #         if serializer.is_valid():

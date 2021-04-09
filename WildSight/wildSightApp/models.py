@@ -1,10 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-# class UserProfile(models.Model):
-#     user   = models.OneToOneField(User)
-#     avatar = models.ImageField(upload_to = 'avatars/')
+#Create your models here.
+class UserProfile(models.Model):
+    user   = models.OneToOneField(User, on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to = 'avatars/')
 
 class Location(models.Model):
     x_coordinate_start=models.DecimalField(max_digits=9, decimal_places=6)

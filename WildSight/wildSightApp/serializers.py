@@ -1,5 +1,5 @@
 from rest_framework import serializers,generics
-from .models import Species, Refined_Sighting, Location ,Raw_Sighting #, UserProfile
+from .models import Species, Refined_Sighting, Location ,Raw_Sighting , UserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -8,11 +8,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username','first_name','last_name','email')
 
-# class UserProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
 
-#     class Meta(UserSerializer.Meta):
-#         model = UserProfile
-#         fields = UserAccountSerializer.Meta.fields + ('avatar',)
+    class Meta(UserSerializer.Meta):
+        model = UserProfile
+        fields = UserSerializer.Meta.fields + ('avatar',)
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
