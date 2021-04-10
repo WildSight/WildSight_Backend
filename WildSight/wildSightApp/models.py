@@ -22,6 +22,7 @@ class Species(models.Model):
 
     common_name=models.CharField(max_length=50)
     scientific_name=models.CharField(max_length=50)
+    image = models.ImageField(blank = True, upload_to='Species_Images/')
 
     def __str__(self):
         return self.common_name
