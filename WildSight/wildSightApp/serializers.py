@@ -42,6 +42,7 @@ class SpeciesSerializer(serializers.ModelSerializer):
             'id',
             'common_name',
             'scientific_name',
+            'image',
         )
         model=Species
 
