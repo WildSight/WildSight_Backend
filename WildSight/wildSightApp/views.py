@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Species, Refined_Sighting, Location, Raw_Sighting
-from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer #, UserProfileSerializer
+from .models import Species, Refined_Sighting, Location, Raw_Sighting #, UserProfile
+from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer , Raw_Sighting_Serializer_Output#, UserProfileSerializer
 from rest_framework import generics, permissions, filters, status
 from rest_framework.response import Response
 from knox.models import AuthToken
@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 
 # Create your views here.
@@ -93,7 +93,7 @@ class Raw_Sighting_Input(generics.CreateAPIView):
     queryset = Raw_Sighting.objects.all()
         
 class Raw_Sighting_Output(generics.ListAPIView):
-    serializer_class = Raw_Sighting_Serializer
+    serializer_class = Raw_Sighting_Serializer_Output
     queryset = Raw_Sighting.objects.all()
    
 
@@ -126,40 +126,39 @@ class LoginAPI(generics.GenericAPIView):
         })
 
 #Get user API
-class UserAPI(generics.RetrieveAPIView):
+class GetUserSightings(generics.ListAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
-    serializer_class = UserSerializer
+    serializer_class=Raw_Sighting_Serializer
 
+    def get_queryset(self):
+        user=self.request.user
+        queryset=Raw_Sighting.objects.filter(user = user)
+        num=self.request.query_params.get('num')
+        if num is not None:
+            return queryset.order_by('date_time').reverse()[0:int(num)]
+        return queryset
+
+class UserProfileAPI(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
     def get_object(self):
         return self.request.user
 
-# class UserProfileAPI(APIView):
-#     serializer_class = UserProfileSerializer
-#     queryset = Raw_Sighting.objects.all()
-#     permission_classes = [
-#         permissions.IsAuthenticated,
-#     ]
-#     parser_classes = [MultiPartParser, FormParser]
+    def patch(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
-#     def get_object(self, pk):
-#         return UserProfile.objects.get(pk=pk)
-
-#     def patch(self, request, pk):
-#         profile_object = self.get_object(pk)
-#         serializer = UserProfileSerializer(profile_object, data=request.data, partial=True) # set partial=True to update a data partially
-#         if serializer.is_valid():
-#             serializer.save()
-#             return queryset(code=201, data=serializer.data)
-#         return queryset(code=400, data="wrong parameters")
+    
 
 
 class Ratification_List(generics.ListAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
-    serializer_class=Raw_Sighting_Serializer
+    serializer_class=Raw_Sighting_Serializer_Output
 
     def get_queryset(self):
         queryset=Raw_Sighting.objects.filter(credible=False)
@@ -170,21 +169,40 @@ class Ratification_List(generics.ListAPIView):
             return queryset.order_by('date_time').reverse()[0:int(num)]
         return queryset
 
-# class vote(generics.UpdateAPIView):
-#     permission_classes = [
-#         permissions.IsAuthenticated,
-#     ]
-#     serializer_class=Raw_Sighting_Serializer
-#     ###  
-#     def patch(self):
-#         #####add this user vote to many to one relationship
-#         votestr=self.request.query_params.get('vote')
-#         queryset=Raw_Sighting.objects.all()
-#         if votestr=='up':
-#             queryset.upvotes+=1
-#         elif votestr=='down':
-#             queryset.downvotes+=1
-#         if queryset.upvotes+queryset.downvotes>=10:
-#             if queryset.upvotes/queryset.downvotes >= 0.7:
-#                   #####add this to refined sighting ,, make credibility=true  
-#                   
+class vote(generics.ListAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class=Raw_Sighting_Serializer_Output
+
+    def get_queryset(self):
+        #####add this user vote to many to one relationship
+        pk=int(self.request.query_params.get('pk'))
+        obj=Raw_Sighting.objects.get(pk=pk)
+
+        if obj is None:
+            return JsonResponse(code=400, data="wrong parameters")
+    
+        obj.voted_by.add(self.request.user)
+
+        votestr=self.request.query_params.get('vote')
+        if votestr=='up':
+            obj.upvotes+=1
+        elif votestr=='down':
+            obj.downvotes+=1
+        obj.save()
+        if obj.upvotes+obj.downvotes>=10:
+            if obj.upvotes/max(1,obj.downvotes) >= 0.7:
+                #####add this to refined sighting ,, make credibility=true  
+                obj.credible=True
+                obj.save()
+                loc=Location.objects.get(y_coordinate_start__lt=obj.location_latitude, y_coordinate_end__gte =obj.location_latitude, x_coordinate_start__lt=obj.location_longitude, x_coordinate_end__gte=obj.location_longitude)
+                sp=Species.objects.get(common_name=obj.species)
+                time=obj.date_time.month
+                refined=Refined_Sighting.objects.get(Location=loc,Species=sp,time_period=time)
+                refined.Number_of_sightings+=1
+                refined.Count+=obj.count
+                refined.save()
+
+        queryset=Raw_Sighting.objects.filter(pk=pk)
+        return queryset

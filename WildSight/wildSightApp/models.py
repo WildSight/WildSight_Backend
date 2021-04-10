@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
+#Create your models here.
 # class UserProfile(models.Model):
-#     user   = models.OneToOneField(User)
+#     user   = models.OneToOneField(User, on_delete=models.CASCADE)
 #     avatar = models.ImageField(upload_to = 'avatars/')
 
 class Location(models.Model):
@@ -22,6 +22,7 @@ class Species(models.Model):
 
     common_name=models.CharField(max_length=50)
     scientific_name=models.CharField(max_length=50)
+    image = models.ImageField(blank = True, upload_to='Species_Images/')
 
     def __str__(self):
         return self.common_name
@@ -69,7 +70,7 @@ class Raw_Sighting(models.Model):
     upvotes = models.PositiveIntegerField(default=0)
     downvotes = models.PositiveIntegerField(default=0)
     credible = models.BooleanField(default=False, blank=True)
-    voted_by=models.ManyToManyField(User, blank=True, null=True, related_name="Voter")
+    voted_by=models.ManyToManyField(User, related_name="Voter")
 
  
 #INBUILT USER MODEL USED

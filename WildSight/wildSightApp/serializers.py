@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 #     class Meta(UserSerializer.Meta):
 #         model = UserProfile
-#         fields = UserAccountSerializer.Meta.fields + ('avatar',)
+#         fields = UserSerializer.Meta.fields + ('avatar',)
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -78,5 +78,23 @@ class Raw_Sighting_Serializer(serializers.ModelSerializer):
             'location_longitude',
             'location_latitude',
             'image',
+        )
+        model=Raw_Sighting
+
+class Raw_Sighting_Serializer_Output(serializers.ModelSerializer):
+    class Meta:
+        fields=(
+            'id',
+            'user',
+            'count',
+            'species',
+            'date_time',
+            'location_longitude',
+            'location_latitude',
+            'image',
+            'voted_by',
+            'credible',
+            'upvotes',
+            'downvotes'
         )
         model=Raw_Sighting
