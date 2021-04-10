@@ -158,7 +158,7 @@ class Ratification_List(generics.ListAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
-    serializer_class=Raw_Sighting_Serializer
+    serializer_class=Raw_Sighting_Serializer_Output
 
     def get_queryset(self):
         queryset=Raw_Sighting.objects.filter(credible=False)
