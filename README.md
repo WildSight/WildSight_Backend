@@ -1,12 +1,9 @@
-# WildSight_Backend
+<h1 align="center">Welcome to WildSight_Backend 👋</h1>
+<p>
+</p>
 
-## Installed packages of pip:
-<ol>
-<li> django-cors-headers </li>
-<li> django-rest-knox </li>
-<li> pillow </li>
-<li> django-filter </li>
-</ol>
+> WildSight is a platform for data collection and awareness about wildlife especially birds. The application leverages the interest of bird watchers which is source of leisure for them and a great means for data collection about wildlife important for further research works by orgainization.
+> We developed a <b>Cross-platform Mobile application</b> (android+ios) to bring idea into existence.
 
 ## Steps to run backend
 <ul>
@@ -14,3 +11,7 @@
     <li>Inside the "WildSight" sub-directory run <code>python manage.py migrate</code></li>
     <li>Now run <code>python manage.py runserver <"your IP">:<"port number"></code></li>
 </ul>
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
