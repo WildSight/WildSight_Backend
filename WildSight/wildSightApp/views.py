@@ -77,15 +77,18 @@ class Raw_Sighting_Input(generics.CreateAPIView):
         # leave this intact
         serializer_class = self.get_serializer_class()
         kwargs["context"] = self.get_serializer_context()
-
         """
         Intercept the request and see if it needs tweaking
-        """
-        
+        """        
         # Copy and manipulate the request
         draft_request_data = self.request.data.copy()
         draft_request_data["user"] = User.objects.get(username=draft_request_data["user"]).pk
-        draft_request_data["species"] = Species.objects.get(common_name = draft_request_data["species"]).id
+        if Species.objects.filter(common_name=draft_request_data["species"]).exists():
+            draft_request_data["species"] = Species.objects.get(common_name = draft_request_data["species"]).id
+        else:
+            draft_request_data["new_species"]=draft_request_data["species"]
+            draft_request_data["species"]= "" 
+
         kwargs["data"] = draft_request_data
         return serializer_class(*args, **kwargs)
     
