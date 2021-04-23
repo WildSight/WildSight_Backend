@@ -9,7 +9,7 @@ from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-
+import json
 
 # Create your views here.
 
@@ -149,6 +149,11 @@ class UserProfileAPI(generics.RetrieveUpdateAPIView):
         return self.request.user
 
     def patch(self, request, *args, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        if('password' in body):
+            self.request.user.set_password(body['password'])
+            self.request.user.save()
         return self.update(request, *args, **kwargs)
 
     
@@ -158,7 +163,7 @@ class Ratification_List(generics.ListAPIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
-    serializer_class=Raw_Sighting_Serializer
+    serializer_class=Raw_Sighting_Serializer_Output
 
     def get_queryset(self):
         queryset=Raw_Sighting.objects.filter(credible=False)
@@ -190,6 +195,7 @@ class vote(generics.ListAPIView):
             obj.upvotes+=1
         elif votestr=='down':
             obj.downvotes+=1
+        
         obj.save()
         if obj.upvotes+obj.downvotes>=10:
             if obj.upvotes/max(1,obj.downvotes) >= 0.7:
