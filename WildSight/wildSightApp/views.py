@@ -209,7 +209,7 @@ class vote(generics.ListAPIView):
         obj.save()
         if obj.upvotes+obj.downvotes>=10:
             if obj.upvotes/max(1,obj.downvotes) >= 0.7:
-                #####add this to refined sighting ,, make credibility=true  
+                #####add this to refined sighting , make credibility=true  
                 obj.credible=True
                 obj.save()
                 loc=Location.objects.get(y_coordinate_start__lt=obj.location_latitude, y_coordinate_end__gte =obj.location_latitude, x_coordinate_start__lt=obj.location_longitude, x_coordinate_end__gte=obj.location_longitude)
