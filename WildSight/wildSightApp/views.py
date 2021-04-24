@@ -171,12 +171,8 @@ class Ratification_List(generics.ListAPIView):
     def get_queryset(self):
         queryset=Raw_Sighting.objects.filter(credible=False)
         user=self.request.user
-        
         queryset=queryset.exclude(user=user)
-        # for i in range(len(queryset)):
-        #     #for voterId in (queryset[i]):
-        #     print((queryset[i]).voted_by)
-        
+        queryset = queryset.exclude(voted_by=user)    
         num=self.request.query_params.get('num') or 10
         num = int(num)
         skip = self.request.query_params.get('skip') or 0
