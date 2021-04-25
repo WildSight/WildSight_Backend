@@ -75,6 +75,7 @@ class Raw_Sighting_Serializer(serializers.ModelSerializer):
             'user',
             'count',
             'species',
+            'new_species',
             'date_time',
             'location_longitude',
             'location_latitude',

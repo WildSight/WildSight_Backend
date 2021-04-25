@@ -9,7 +9,7 @@ from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-
+import json
 
 # Create your views here.
 
@@ -89,15 +89,18 @@ class Raw_Sighting_Input(generics.CreateAPIView):
         # leave this intact
         serializer_class = self.get_serializer_class()
         kwargs["context"] = self.get_serializer_context()
-
         """
         Intercept the request and see if it needs tweaking
-        """
-        
+        """        
         # Copy and manipulate the request
         draft_request_data = self.request.data.copy()
         draft_request_data["user"] = User.objects.get(username=draft_request_data["user"]).pk
-        draft_request_data["species"] = Species.objects.get(common_name = draft_request_data["species"]).id
+        if Species.objects.filter(common_name=draft_request_data["species"]).exists():
+            draft_request_data["species"] = Species.objects.get(common_name = draft_request_data["species"]).id
+        else:
+            draft_request_data["new_species"]=draft_request_data["species"]
+            draft_request_data["species"]= "" 
+
         kwargs["data"] = draft_request_data
         return serializer_class(*args, **kwargs)
     
@@ -161,6 +164,11 @@ class UserProfileAPI(generics.RetrieveUpdateAPIView):
         return self.request.user
 
     def patch(self, request, *args, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        if('password' in body):
+            self.request.user.set_password(body['password'])
+            self.request.user.save()
         return self.update(request, *args, **kwargs)
 
     
@@ -176,10 +184,13 @@ class Ratification_List(generics.ListAPIView):
         queryset=Raw_Sighting.objects.filter(credible=False)
         user=self.request.user
         queryset=queryset.exclude(user=user)
-        num=self.request.query_params.get('num')
-        if num is not None:
-            return queryset.order_by('date_time').reverse()[0:int(num)]
-        return queryset
+        queryset = queryset.exclude(voted_by=user)    
+        num=self.request.query_params.get('num') or 10
+        num = int(num)
+        skip = self.request.query_params.get('skip') or 0
+        skip = int(skip)
+        return queryset.order_by('date_time')[skip*num:(skip+1)*num]
+
 
 class vote(generics.ListAPIView):
     permission_classes = [
@@ -202,10 +213,11 @@ class vote(generics.ListAPIView):
             obj.upvotes+=1
         elif votestr=='down':
             obj.downvotes+=1
+        
         obj.save()
         if obj.upvotes+obj.downvotes>=10:
             if obj.upvotes/max(1,obj.downvotes) >= 0.7:
-                #####add this to refined sighting ,, make credibility=true  
+                #####add this to refined sighting , make credibility=true  
                 obj.credible=True
                 obj.save()
                 loc=Location.objects.get(y_coordinate_start__lt=obj.location_latitude, y_coordinate_end__gte =obj.location_latitude, x_coordinate_start__lt=obj.location_longitude, x_coordinate_end__gte=obj.location_longitude)
