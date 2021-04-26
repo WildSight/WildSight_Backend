@@ -63,6 +63,18 @@ class Refined_Sightings_Locations_list(generics.ListAPIView):
             return queryset.filter(Location=loc)
         return queryset.filter(Location=loc, time_period=time)
 
+class Refined_Sightings_Species_Locations_list(generics.ListAPIView):
+    serializer_class=Refined_Sighting_Serializer
+
+    def get_queryset(self):
+        queryset=Refined_Sighting.objects.all()
+        loc=self.request.query_params.get('loc')
+        time=self.request.query_params.get('time')
+        sp=self.request.query_params.get('sp')
+        if time is None:
+            return queryset.filter(Location=loc)
+        return queryset.filter(Location=loc, time_period=time, Species=sp)
+
 class Location_element(generics.RetrieveAPIView):
     queryset=Location.objects.all()
     serializer_class=LocationSerializer
