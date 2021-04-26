@@ -84,3 +84,9 @@ class Raw_Sighting(models.Model):
 #Temp Token table
 #token
 #userid
+
+class Expert_Ratification_Sightings(Raw_Sighting):
+    expert_credible=models.BooleanField(default=False, blank=True)
+
+    def __str__(self):
+        return "{} AT {}, {}. ON {}".format(self.new_species, self.location_latitude, self.location_longitude, self.date_time)

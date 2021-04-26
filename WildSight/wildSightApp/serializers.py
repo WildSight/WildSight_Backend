@@ -80,6 +80,7 @@ class Raw_Sighting_Serializer(serializers.ModelSerializer):
             'location_longitude',
             'location_latitude',
             'image',
+            'credible',
         )
         model=Raw_Sighting
 
@@ -90,6 +91,7 @@ class Raw_Sighting_Serializer_Output(serializers.ModelSerializer):
             'user',
             'count',
             'species',
+            'new_species',
             'date_time',
             'location_longitude',
             'location_latitude',

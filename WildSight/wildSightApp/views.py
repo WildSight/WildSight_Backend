@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Species, Refined_Sighting, Location, Raw_Sighting #, UserProfile
+from .models import Species, Refined_Sighting, Location, Raw_Sighting, Expert_Ratification_Sightings #, UserProfile
 from .serializers import SpeciesSerializer, Refined_Sighting_Serializer, Raw_Sighting_Serializer, LocationSerializer, UserSerializer, RegisterSerializer, LoginSerializer , Raw_Sighting_Serializer_Output#, UserProfileSerializer
 from rest_framework import generics, permissions, filters, status
 from rest_framework.response import Response
@@ -73,6 +73,8 @@ class Raw_Sighting_Input(generics.CreateAPIView):
     ]
     parser_classes = [MultiPartParser, FormParser]
     
+    serializer_class = Raw_Sighting_Serializer
+
     def get_serializer(self, *args, **kwargs):
         # leave this intact
         serializer_class = self.get_serializer_class()
@@ -92,7 +94,27 @@ class Raw_Sighting_Input(generics.CreateAPIView):
         kwargs["data"] = draft_request_data
         return serializer_class(*args, **kwargs)
     
-    serializer_class = Raw_Sighting_Serializer
+    def post(self, request, *args, **kwargs):
+        obj1=self.get_serializer(data=request.data)
+        obj1.is_valid()
+        # print(obj1.validated_data)
+        #obj.create(validated_data=obj.validated_data)
+        obj=obj1.save()
+        if obj.credible==True:
+            loc=Location.objects.get(y_coordinate_start__lt=obj.location_latitude, y_coordinate_end__gte =obj.location_latitude, x_coordinate_start__lt=obj.location_longitude, x_coordinate_end__gte=obj.location_longitude)
+            sp=Species.objects.get(common_name=obj.species)
+            time=obj.date_time.month
+            try:
+                refined=Refined_Sighting.objects.get(Location=loc,Species=sp,time_period=time)
+                refined.Number_of_sightings+=1
+                refined.Count+=obj.count
+                refined.save()
+            except Refined_Sighting.DoesNotExist:
+                refined=Refined_Sighting(Location=loc, Species=sp, time_period=time, Count=obj.count, Number_of_sightings=1)
+                refined.save()
+        headers = self.get_success_headers(obj1.data)
+        return Response(obj1.data, status=status.HTTP_201_CREATED, headers=headers)
+
     queryset = Raw_Sighting.objects.all()
         
 class Raw_Sighting_Output(generics.ListAPIView):
@@ -208,13 +230,22 @@ class vote(generics.ListAPIView):
                 #####add this to refined sighting , make credibility=true  
                 obj.credible=True
                 obj.save()
-                loc=Location.objects.get(y_coordinate_start__lt=obj.location_latitude, y_coordinate_end__gte =obj.location_latitude, x_coordinate_start__lt=obj.location_longitude, x_coordinate_end__gte=obj.location_longitude)
-                sp=Species.objects.get(common_name=obj.species)
-                time=obj.date_time.month
-                refined=Refined_Sighting.objects.get(Location=loc,Species=sp,time_period=time)
-                refined.Number_of_sightings+=1
-                refined.Count+=obj.count
-                refined.save()
+                if obj.species is not None:
+                    loc=Location.objects.get(y_coordinate_start__lt=obj.location_latitude, y_coordinate_end__gte =obj.location_latitude, x_coordinate_start__lt=obj.location_longitude, x_coordinate_end__gte=obj.location_longitude)
+                    sp=Species.objects.get(common_name=obj.species)
+                    time=obj.date_time.month
+                    try:
+                        refined=Refined_Sighting.objects.get(Location=loc,Species=sp,time_period=time)
+                        refined.Number_of_sightings+=1
+                        refined.Count+=obj.count
+                        refined.save()
+                    except Refined_Sighting.DoesNotExist:
+                        refined=Refined_Sighting(Location=loc, Species=sp, time_period=time, Count=obj.count, Number_of_sightings=1)
+                        refined.save()
+                else:
+                    expert_obj=Expert_Ratification_Sightings()
+                    expert_obj.__dict__.update(obj.__dict__)
+                    expert_obj.save()
 
         queryset=Raw_Sighting.objects.filter(pk=pk)
         return queryset
